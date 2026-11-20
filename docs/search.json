@@ -1,0 +1,58 @@
+[
+  {
+    "objectID": "exploracion_quarto.html",
+    "href": "exploracion_quarto.html",
+    "title": "Bajo peso al nacer en Guatemala",
+    "section": "",
+    "text": "NotaSobre los datos\n\n\n\nEste informe utiliza registros generados artificialmente con fines docentes y de reproducibilidad. Ninguna observación corresponde a una persona real y los resultados no deben interpretarse como estimaciones oficiales de Guatemala."
+  },
+  {
+    "objectID": "exploracion_quarto.html#contexto",
+    "href": "exploracion_quarto.html#contexto",
+    "title": "Bajo peso al nacer en Guatemala",
+    "section": "Contexto",
+    "text": "Contexto\nEl bajo peso al nacer es un indicador relevante de salud maternoinfantil. En este proyecto se exploran patrones temporales, estacionales y territoriales del peso al nacer y del bajo peso al nacer en Guatemala entre 2009 y 2024.\nLa base inicial contiene 100.000 nacimientos ficticios generados mediante un script reproducible con semilla fija. Después de aplicar los criterios definidos de calidad y elegibilidad, la muestra analítica contiene 97.700 registros.\n\nPreguntas exploratorias\nEsta primera aproximación busca responder:\n\n¿Cómo se distribuye el peso al nacer en la muestra analítica?\n¿Cómo cambia la prevalencia de bajo peso al nacer entre 2009 y 2024?\n¿Existe un patrón estacional según el mes de nacimiento?\n¿Se observan diferencias entre departamentos y grupos de edad materna?"
+  },
+  {
+    "objectID": "exploracion_quarto.html#de-la-base-simulada-a-la-muestra-analítica",
+    "href": "exploracion_quarto.html#de-la-base-simulada-a-la-muestra-analítica",
+    "title": "Bajo peso al nacer en Guatemala",
+    "section": "De la base simulada a la muestra analítica",
+    "text": "De la base simulada a la muestra analítica\nSe excluyeron 2.300 registros de la base inicial por peso desconocido, peso extremo, fecha de nacimiento desconocida o residencia materna desconocida. El flujo completo se generó mediante 02_scripts/02_preparar_base_analitica.R.\n\n\n\n\n\n\n\n\nFigura 1: Flujo de exclusiones aplicado para construir la muestra analítica.\n\n\n\n\n\nComo se observa en Figura 1, el objetivo de la limpieza es retirar únicamente los registros que no cumplen los criterios necesarios para esta exploración."
+  },
+  {
+    "objectID": "exploracion_quarto.html#una-primera-mirada-al-peso-al-nacer",
+    "href": "exploracion_quarto.html#una-primera-mirada-al-peso-al-nacer",
+    "title": "Bajo peso al nacer en Guatemala",
+    "section": "Una primera mirada al peso al nacer",
+    "text": "Una primera mirada al peso al nacer\nEn la muestra analítica, el peso medio al nacer es de 3100 g y la mediana de 3147 g. La prevalencia global de bajo peso al nacer es de 11.7 %.\n\n\nVer código\nggplot(\n  base,\n  aes(x = birth_weight_g)\n) +\n  geom_histogram(\n    binwidth = 100,\n    boundary = 0,\n    fill = \"grey65\",\n    colour = \"white\",\n    linewidth = 0.2\n  ) +\n  geom_vline(\n    xintercept = 2500,\n    linetype = \"dashed\",\n    linewidth = 0.7\n  ) +\n  labs(\n    x = \"Peso al nacer (g)\",\n    y = \"Número de nacimientos\",\n    title = \"Distribución del peso al nacer\",\n    subtitle = \"La línea discontinua indica el umbral de 2500 g\"\n  ) +\n  tema_grafico\n\n\n\n\n\n\n\n\nFigura 2: Distribución del peso al nacer en la muestra analítica.\n\n\n\n\n\nLa distribución de Figura 2 permite situar visualmente el punto de corte de 2500 g utilizado para definir el desenlace principal."
+  },
+  {
+    "objectID": "exploracion_quarto.html#tendencia-temporal",
+    "href": "exploracion_quarto.html#tendencia-temporal",
+    "title": "Bajo peso al nacer en Guatemala",
+    "section": "Tendencia temporal",
+    "text": "Tendencia temporal\n\n\nVer código\nresumen_anual &lt;- resumir_lbw(\n  base,\n  birth_year\n)\n\nggplot(\n  resumen_anual,\n  aes(\n    x = birth_year,\n    y = prevalencia\n  )\n) +\n  geom_errorbar(\n    aes(\n      ymin = li95,\n      ymax = ls95\n    ),\n    width = 0.12,\n    linewidth = 0.45\n  ) +\n  geom_line(\n    linewidth = 0.75\n  ) +\n  geom_point(\n    size = 2.1\n  ) +\n  scale_x_continuous(\n    breaks = seq(\n      2009,\n      2024,\n      by = 2\n    )\n  ) +\n  labs(\n    x = \"Año\",\n    y = \"Bajo peso al nacer (%)\",\n    title = \"Prevalencia anual de bajo peso al nacer, 2009–2024\",\n    subtitle = \"Prevalencia e intervalo de confianza del 95%\"\n  ) +\n  tema_grafico\n\n\n\n\n\n\n\n\nFigura 3: Prevalencia anual de bajo peso al nacer entre 2009 y 2024.\n\n\n\n\n\nLa Figura 3 muestra una evolución temporal ascendente de la prevalencia simulada, aunque con variaciones entre años. Esta tendencia forma parte de los patrones incorporados deliberadamente durante la generación de los datos y, por lo tanto, debe interpretarse únicamente como material para practicar el análisis reproducible."
+  },
+  {
+    "objectID": "exploracion_quarto.html#otros-patrones-exploratorios",
+    "href": "exploracion_quarto.html#otros-patrones-exploratorios",
+    "title": "Bajo peso al nacer en Guatemala",
+    "section": "Otros patrones exploratorios",
+    "text": "Otros patrones exploratorios\nLas siguientes visualizaciones se agrupan en pestañas para comparar distintos aspectos de la base sin alargar innecesariamente el documento.\n\nEstacionalidadDepartamentoEdad materna\n\n\n\n\nVer código\nresumen_mensual &lt;- resumir_lbw(\n  base,\n  birth_month\n)\n\nmeses &lt;- c(\n  \"Ene\", \"Feb\", \"Mar\", \"Abr\",\n  \"May\", \"Jun\", \"Jul\", \"Ago\",\n  \"Sep\", \"Oct\", \"Nov\", \"Dic\"\n)\n\nggplot(\n  resumen_mensual,\n  aes(\n    x = birth_month,\n    y = prevalencia\n  )\n) +\n  geom_errorbar(\n    aes(\n      ymin = li95,\n      ymax = ls95\n    ),\n    width = 0.10,\n    linewidth = 0.45\n  ) +\n  geom_line(\n    linewidth = 0.75\n  ) +\n  geom_point(\n    size = 2.1\n  ) +\n  scale_x_continuous(\n    breaks = 1:12,\n    labels = meses\n  ) +\n  labs(\n    x = \"Mes de nacimiento\",\n    y = \"Bajo peso al nacer (%)\",\n    title = \"Patrón estacional del bajo peso al nacer\",\n    subtitle = \"Prevalencia e intervalo de confianza del 95%\"\n  ) +\n  tema_grafico\n\n\n\n\n\n\n\n\nFigura 4: Prevalencia de bajo peso al nacer según mes de nacimiento.\n\n\n\n\n\nEn Figura 4 se explora si la frecuencia de bajo peso al nacer presenta un patrón sistemático a lo largo del año.\n\n\n\n\nVer código\nresumen_departamental &lt;- resumir_lbw(\n  base,\n  maternal_department_name\n) |&gt;\n  arrange(prevalencia) |&gt;\n  mutate(\n    maternal_department_name = factor(\n      maternal_department_name,\n      levels = maternal_department_name\n    )\n  )\n\nggplot(\n  resumen_departamental,\n  aes(\n    y = maternal_department_name,\n    x = prevalencia\n  )\n) +\n  geom_segment(\n    aes(\n      x = li95,\n      xend = ls95,\n      yend = maternal_department_name\n    ),\n    linewidth = 0.55\n  ) +\n  geom_point(\n    size = 2.3\n  ) +\n  labs(\n    x = \"Bajo peso al nacer (%)\",\n    y = NULL,\n    title = \"Variación del bajo peso al nacer entre departamentos\",\n    subtitle = \"Prevalencia e intervalo de confianza del 95%\"\n  ) +\n  tema_grafico\n\n\n\n\n\n\n\n\nFigura 5: Prevalencia de bajo peso al nacer por departamento de residencia materna.\n\n\n\n\n\nLa Figura 5 permite ordenar los territorios según su prevalencia simulada y explorar heterogeneidad espacial.\n\n\n\n\nVer código\norden_edad &lt;- c(\n  \"&lt;15\",\n  \"15-19\",\n  \"20-24\",\n  \"25-29\",\n  \"30-34\",\n  \"35-39\",\n  \"&gt;=40\"\n)\n\nresumen_edad &lt;- base |&gt;\n  filter(\n    !is.na(maternal_age_group)\n  ) |&gt;\n  mutate(\n    maternal_age_group = factor(\n      maternal_age_group,\n      levels = orden_edad\n    )\n  ) |&gt;\n  resumir_lbw(\n    maternal_age_group\n  )\n\nggplot(\n  resumen_edad,\n  aes(\n    x = maternal_age_group,\n    y = prevalencia\n  )\n) +\n  geom_errorbar(\n    aes(\n      ymin = li95,\n      ymax = ls95\n    ),\n    width = 0.12,\n    linewidth = 0.5\n  ) +\n  geom_point(\n    size = 2.5\n  ) +\n  labs(\n    x = \"Edad materna (años)\",\n    y = \"Bajo peso al nacer (%)\",\n    title = \"Bajo peso al nacer según edad materna\",\n    subtitle = \"Prevalencia e intervalo de confianza del 95%\"\n  ) +\n  tema_grafico\n\n\n\n\n\n\n\n\nFigura 6: Prevalencia de bajo peso al nacer según grupo de edad materna.\n\n\n\n\n\nLa Figura 6 explora la distribución del bajo peso al nacer a lo largo de los distintos grupos de edad materna."
+  },
+  {
+    "objectID": "exploracion_quarto.html#datos-ausentes",
+    "href": "exploracion_quarto.html#datos-ausentes",
+    "title": "Bajo peso al nacer en Guatemala",
+    "section": "Datos ausentes",
+    "text": "Datos ausentes\nLos valores ausentes en características maternas se conservaron cuando no impedían responder las preguntas principales. En la muestra analítica, el porcentaje de datos ausentes es de 0.7 % para edad materna, 1.9 % para educación, 2.4 % para pertenencia indígena y 1.5 % para estado marital.\nEsta decisión evita aplicar una eliminación por casos completos a variables que no son necesarias para todos los análisis.\n\n\n\n\n\n\nTipExploración inicial\n\n\n\nEste documento corresponde a una primera exploración de Quarto aplicada al proyecto. Su objetivo es probar un flujo en el que los datos, los cálculos, el texto y las visualizaciones se actualicen de forma reproducible al volver a renderizar el archivo."
+  },
+  {
+    "objectID": "exploracion_quarto.html#próximos-pasos",
+    "href": "exploracion_quarto.html#próximos-pasos",
+    "title": "Bajo peso al nacer en Guatemala",
+    "section": "Próximos pasos",
+    "text": "Próximos pasos\nLas siguientes etapas contemplan ampliar la descripción de las características maternas y del nacimiento, revisar otras comparaciones territoriales y consolidar la estructura del documento como base del informe final del proyecto."
+  }
+]
