@@ -34,11 +34,11 @@ library(dplyr)
 library(ggplot2)
 
 base_original <- readRDS(
-  "../01_datos/nacimientos_guatemala.rds"
+  "01_datos/nacimientos_guatemala.rds"
 )
 
 base <- readRDS(
-  "../01_datos/nacimientos_analisis.rds"
+  "01_datos/nacimientos_analisis.rds"
 )
 
 n_inicial <- nrow(base_original)
@@ -161,7 +161,7 @@ Se excluyeron **`r format(n_excluidos, big.mark = ".")` registros** de la base i
 #| out-width: "70%"
 
 knitr::include_graphics(
-  "../03_resultados/01_grafico-exclusiones.png"
+  "03_resultados/01_grafico-exclusiones.png"
 )
 ```
 
